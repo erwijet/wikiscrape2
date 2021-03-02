@@ -1,0 +1,16 @@
+{
+  "name": "wikiscrape2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "erwijet <sreedoflight@gmail.com>",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
+    "dotenv": "^8.2.0",
+    "typescript": "^4.2.2"
+  }
+}

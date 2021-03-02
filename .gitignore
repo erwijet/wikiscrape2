@@ -1,0 +1,21 @@
+#
+#
+#
+# EXCLUDE node modules (obviously)
+node_modules/
+# EXCLUDE yarn files (npm-compatable)
+yarn.lock
+# EXCLUDE Prettier settings (although mine are the objective best)
+.prettierrc
+# EXCLUDE yarn error log (obviously, but I don't want the world
+# to see how bad of a programmer I am lol)
+yarn-error.log
+#
+# EXCLUDE any logs that have been created
+*.txt
+#
+# .env does not contain sensitive data
+# -> INCLUDE .env
+#
+#
+#
