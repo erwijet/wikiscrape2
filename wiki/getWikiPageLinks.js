@@ -4,7 +4,7 @@ const isWikiArticleAsync = require('./isWikiArticle');
 
 require('dotenv').config();
 
-const { BASE_URL, origin } = process.env;
+const { BASE_URL, ORIGIN } = process.env;
 
 function validateHref(href) {
 	if (!href) return false; // assert href exists
@@ -18,7 +18,7 @@ function validateHref(href) {
 		':', // reject links to special pages (forums, chatpages, etc) as per http://en.wikipedia.org/robots.txt
 		'main_page',
 		',', // reject commas, they trip up the URL parser
-		origin.toLowerCase() // dont link back to our starting point. That would be stupid
+		ORIGIN.toLowerCase() // dont link back to our starting point. That would be stupid
 	];
 
 	let isValid = true;
