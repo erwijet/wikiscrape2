@@ -1,6 +1,6 @@
-# WikiParse2
+# WikiScrape2
 
-WikiParse2 is a wikipedia crawler that recursivly traverses article links within each article link within each article link... and so on and so forth.
+WikiScrape2 is a wikipedia crawler that recursivly traverses article links within each article link within each article link... and so on and so forth.
 
 ### Setup
 
@@ -26,5 +26,4 @@ Once you have changed the settings to your liking, you can run the scraper by ca
 
 `$ yarn start`
 
-This will take anywhere from a couple minutes to a couple days depending on your settings. 
-
+This will take anywhere from a couple minutes to a couple days depending on your settings.
