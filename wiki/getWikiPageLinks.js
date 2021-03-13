@@ -17,8 +17,8 @@ function validateHref(href) {
 		'.', // reject attached files (images, sounds, etc...)
 		':', // reject links to special pages (forums, chatpages, etc) as per http://en.wikipedia.org/robots.txt
 		'main_page',
-		',',
-		origin.toLowerCase()
+		',', // reject commas, they trip up the URL parser
+		origin.toLowerCase() // dont link back to our starting point. That would be stupid
 	];
 
 	let isValid = true;
@@ -30,14 +30,15 @@ function validateHref(href) {
 }
 
 async function getWikiPageLinks(expr) {
-	// console.log('checking ' + expr + '...');
+	// validate expression is actually a wiki article
 	const isWikiArticle = await isWikiArticleAsync(expr, true);
-	// console.log('is article: ' + isWikiArticle);
 	if (!isWikiArticle) return [];
 
+	// fetch data
 	const URL = BASE_URL + expr;
 	const $ = cheerio.load((await axios.get(URL)).data);
 
+	// parse data
 	return Object.values($('a'))
 		.map(elem => elem.attribs?.href)
 		.filter(validateHref);

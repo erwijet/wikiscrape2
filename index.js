@@ -1,45 +1,49 @@
-const { createNamedExports } = require('typescript');
 const wiki = require('./wiki/wiki');
-const { WikiNode } = wiki;
 const fs = require('fs');
+const { performance } = require('perf_hooks'); // timing
 
 require('dotenv').config();
 
-const { origin } = process.env;
+const {
+	ORIGIN,
+	LOG_FILE,
+	DEPTH_LIMIT,
+	ARTICLE_LINK_LIMIT,
+	ARTICLE_LINK_OFFSET
+} = process.env;
 
-let tree = new WikiNode(1);
-tree.addChild(new WikiNode(2));
-tree.addChild(new WikiNode(3));
-tree.addChild(new WikiNode(4));
-
-tree.children[0].addChild(new WikiNode(5));
-tree.children[1].addChild(new WikiNode(6));
-tree.children[1].children[0].addChild(new WikiNode(7));
-
-const DEPTH_LIMIT = 3; // no more than 3 articles deep
+const LOG_FILE_PATH = __dirname + '/' + LOG_FILE;
 
 async function dls(visited, node, depth) {
 	if (!visited.includes(node) && depth <= DEPTH_LIMIT) {
 		visited.push(node);
 		fs.appendFileSync(
-			__dirname + '/wikiscrape2_LOG.txt',
-			`[${depth}] ${node} \n`
+			LOG_FILE_PATH,
+			`${(() => {
+				let str = '';
+				for (let i = 0; i < depth; i++) {
+					str += '  ';
+				}
+				return str;
+			})()}[d${depth}] ${node} \n`
 		);
-		// console.log(depth, node);
 
-		// if (trace.length >= DEPTH_LIMIT) return;
 		const links = await wiki.getWikiPageLinks(node);
-		// console.log(links);
 
+		let i = 0;
 		for await (let url of links) {
-			await dls(visited, url, depth + 1);
+			if (i++ >= ARTICLE_LINK_OFFSET && i <= ARTICLE_LINK_LIMIT)
+				await dls(visited, url, depth + 1);
 		}
-
-		// node.children.forEach(c => dfs(visited, c, trace));
 	}
 }
 
 (async () => {
-	fs.unlinkSync(__dirname + '/wikiscrape2_LOG.txt');
-	await dls([], '/wiki/' + origin, 1);
+	const t0 = performance.now();
+	if (fs.existsSync(LOG_FILE_PATH)) fs.unlinkSync(LOG_FILE_PATH);
+	await dls([], '/wiki/' + ORIGIN, 1);
+
+	// write file footer
+	const t = ((performance.now() - t0) / 60000).toFixed(2);
+	fs.appendFileSync(LOG_FILE_PATH, `\n\n[✔] Scrape Finished in ${t} min`);
 })();
